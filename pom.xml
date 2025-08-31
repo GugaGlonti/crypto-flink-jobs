@@ -7,12 +7,48 @@
   <version>1.0-SNAPSHOT</version>
   <name>crypto-flink-jobs</name>
   <url>http://maven.apache.org</url>
+
+
+  <properties>
+    <flink.version>2.1.0</flink.version>
+    <java.version>21</java.version>
+  </properties>
+
   <dependencies>
+
+    <!-- Flink Streaming API -->
+    <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-java -->
+    <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-streaming-java</artifactId>
+        <version>2.1.0</version>
+        <scope>provided</scope>
+    </dependency>
+    
+    <!-- Flink Kafka Connector -->
+    <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-connector-kafka -->
+    <dependency>
+        <groupId>org.apache.flink</groupId>
+        <artifactId>flink-connector-kafka</artifactId>
+        <version>4.0.1-2.0</version>
+    </dependency>
+
+    <!-- Flink Redis Connector -->
+    <!-- https://mvnrepository.com/artifact/org.apache.bahir/flink-connector-redis -->
+    <dependency>
+        <groupId>org.apache.bahir</groupId>
+        <artifactId>flink-connector-redis_2.12</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+
+    <!-- JUnit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
+
 </project>

@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-mvn clean package -DskipTests
+mvn clean package -DskipTests --quiet

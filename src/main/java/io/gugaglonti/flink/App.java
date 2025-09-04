@@ -1,11 +1,13 @@
 package io.gugaglonti.flink;
 
-import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import io.gugaglonti.flink.entities.BinanceTradeEvent;
+import io.gugaglonti.flink.serialization.BinanceTradeDeserializationSchema;
+
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 
 /**
@@ -17,19 +19,22 @@ public class App {
     public static void main( String[] args ) {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        final KafkaSource<String> consumer = KafkaSource.<String>builder()
-            .setBootstrapServers("localhost:9092")
+        final KafkaSource<BinanceTradeEvent> consumer = KafkaSource.<BinanceTradeEvent>builder()
+            .setBootstrapServers("kafka-service.crypto.svc.cluster.local:9092")
             .setTopics("binance_trades")
             .setGroupId("crypto-flink")
             .setStartingOffsets(OffsetsInitializer.earliest())
-            .setValueOnlyDeserializer(new SimpleStringSchema())
+            .setValueOnlyDeserializer(new BinanceTradeDeserializationSchema())
             .build();
 
-        DataStream<String> stream = env.fromSource(consumer, WatermarkStrategy.noWatermarks(), "Kafka Source");
+        DataStream<BinanceTradeEvent> stream = env
+            .fromSource(consumer, WatermarkStrategy.noWatermarks(), "Kafka Source");
 
-        stream.map((MapFunction<String, String>) value -> value.toUpperCase());
 
-        stream.print();
+        stream
+            .map(BinanceTradeEvent::getPrice)
+            .print();
+
 
         try {
             env.execute("Flink Job Test");
